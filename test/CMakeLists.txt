@@ -1,10 +1,1 @@
-cmake_minimum_required(VERSION 3.21)
-project(async)
-
-set(CMAKE_CXX_STANDARD 20)
-
-add_executable(async main.cpp)
-
-add_subdirectory(src)
-add_subdirectory(test)
-
+add_executable(test_async_example test_async_example.cpp)

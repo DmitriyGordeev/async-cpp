@@ -1,6 +1,6 @@
 #include <iostream>
 #include <future>
-
+#include <memory>
 #include "utils.h"
 #include "httplib.h"
 
@@ -8,11 +8,14 @@ using std::cout;
 using std::string;
 
 
+/** This program is a quick cheat-sheet of how to use std::async */
+
+
 const std::string services[] = {
-    "https://catfact.ninja/fact",
-    "https://api.coindesk.com/v1/bpi/currentprice.json",
-    "https://www.boredapi.com/api/activity",
-    "https://api.agify.io?name=meelad"
+    "http://catfact.ninja/fact",
+    "http://api.coindesk.com/v1/bpi/currentprice.json",
+    "http://www.boredapi.com/api/activity",
+    "http://api.agify.io?name=meelad"
 };
 
 
@@ -25,11 +28,26 @@ std::pair<int, std::string> get(const std::string& url, const std::string& args)
 int main() {
 
     int num_services = sizeof(services) / sizeof(std::string);
+//    auto* futures = new std::future<std::pair<int, string>>[num_services];
 
+    std::shared_ptr<std::future<std::pair<int, string>>[]> futures(new std::future<std::pair<int, string>>[num_services]);
+
+    // spawn futures starting underlying task
+    // and collect into array
     for (int i = 0; i < num_services; i++) {
-        auto f = std::async(std::launch::async, &get, );
+        auto p = split_url(services[i]);    // p.first = root url, p.second = GET args
+        cout << "url: " << p.first << ", args: " << p.second << "\n";
+        futures[i] = std::async(std::launch::async, &get, p.first, p.second);
     }
 
+    // TODO: wait until all are finished
+
+    // TOOD: implement then() somehow ?
+
+
+
+
+//    delete[] futures;
     return 0;
 }
 

@@ -29,4 +29,8 @@ TEST_CASE("split url") {
     CHECK("catfact.ninja" == p2.first);
     CHECK("/arg1" == p2.second);
 
+    auto p3 = split_url("https://catfact.ninja");
+    CHECK("catfact.ninja" == p3.first);
+    CHECK("" == p3.second);
+
 }

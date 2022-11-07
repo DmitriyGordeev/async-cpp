@@ -10,12 +10,12 @@ using std::cout;
 
 
 int foo(int a) {
-    cout << "foo() starts\n";
+    cout << "GET() starts\n";
 
     // assume some code is running in meantime
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
-    cout << "foo() ends\n";
+    cout << "GET() ends\n";
 
     return a + 2;
 }
@@ -37,7 +37,6 @@ TEST_CASE("simple async usage") {
 
 
     // This is example how we can wait for all futures to be finished
-    // blocked until all of them finished
     bool all_ready = false;
     while(!all_ready) {
         bool ready = true;

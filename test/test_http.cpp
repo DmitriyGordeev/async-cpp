@@ -42,4 +42,6 @@ TEST_CASE("simple http GET wrapped into async") {
 
     cout << r.first << "\n";
     cout << r.second << "\n";
+
+    CHECK(r.first == 200);
 }

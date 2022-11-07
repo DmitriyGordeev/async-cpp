@@ -1,3 +1,6 @@
 [submodule "deps/doctest"]
 	path = deps/doctest
 	url = https://github.com/doctest/doctest.git
+[submodule "deps/cpp-httplib"]
+	path = deps/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib.git

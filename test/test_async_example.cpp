@@ -65,7 +65,8 @@ TEST_CASE("simple async usage") {
 }
 
 
-
+// Todo: is this correct implementation of .then() logic ?
+//  spawns future inside another future and waits
 TEST_CASE("then") {
 
     cout << "------- TEST2 ------- \n";
@@ -90,12 +91,13 @@ TEST_CASE("then") {
 
     auto f = std::async(std::launch::async, l);
 
-    cout << "Some code in a meantime\n";
+    cout << "Some code can be here in a meantime\n";
 
     auto innerf = f.get();
 
     cout << "another code\n";
 
+    // waiting for the nested future to be finished
     innerf.get();
 
     cout << "TEST ENDS\n";

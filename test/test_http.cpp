@@ -6,8 +6,7 @@
 using std::cout;
 
 #include "doctest.h"
-#include "httplib.h"
-
+#include "utils.h"
 
 
 TEST_CASE("simple http request example with cpp-httplib") {
@@ -24,23 +23,14 @@ TEST_CASE("simple http request example with cpp-httplib") {
 
 
 
-std::pair<int, std::string> GET(const std::string url, const std::string& args) {
-    httplib::Client cli(url);
-    auto r = cli.Get(args);
-    return {r->status, r->body};
-}
-
-
 TEST_CASE("simple http GET wrapped into async") {
     auto f =
-            std::async(std::launch::async, &GET, "http://www.boredapi.com", "/api/activity");
+            std::async(std::launch::async, &get, "http://www.boredapi.com", "/api/activity");
 
-    cout << "ready = " << (f.wait_for(std::chrono::seconds(0)) == std::future_status::ready) << "\n";
+    cout << "some code can be here\n";
 
-    auto r = f.get();
-
-    cout << r.first << "\n";
-    cout << r.second << "\n";
-
+    auto r = f.get();       // waiting for future to be finished
+    cout << "status code " << r.first << "\n";
+    cout << "body:\n" << r.second << "\n";
     CHECK(r.first == 200);
 }

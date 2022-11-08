@@ -2,7 +2,7 @@
 #include <future>
 #include <memory>
 #include "utils.h"
-#include "httplib.h"
+
 
 using std::cout;
 using std::string;
@@ -17,17 +17,6 @@ const std::pair<string, string> services[] = {
         {"http://www.boredapi.com", "/api/activity"}
 };
 
-/**
- * This function is a simple wrapper around http GET request
- * @param url
- * @param args
- * @return pair = status code(int), response body (string)
- */
-std::pair<int, std::string> get(const std::string& url, const std::string& args) {
-    httplib::Client cli(url);
-    auto r = cli.Get(args);
-    return {r->status, r->body};
-}
 
 
 int main() {

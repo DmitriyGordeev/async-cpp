@@ -1,2 +1,2 @@
-add_executable(async
+add_executable(main
         main.cpp)

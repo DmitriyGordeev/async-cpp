@@ -102,3 +102,29 @@ TEST_CASE("then") {
 
     cout << "TEST ENDS\n";
 }
+
+
+
+TEST_CASE("exception inside future") {
+
+    // Create simple future
+    auto f = std::async(std::launch::async, [](int a) -> void {
+        if (a > 5) {
+            throw std::runtime_error("a > 5");
+        }
+        cout << a << "\n";
+    }, 6);
+
+    // Some code can be here (utilizing asynchronous task)
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+
+    // Catch exception inside the future
+    try {
+        f.get();
+    }
+    catch(const std::exception& e) {
+        cout << "exception:" << e.what() << "\n";
+    }
+
+}

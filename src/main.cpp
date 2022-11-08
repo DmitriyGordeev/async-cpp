@@ -22,8 +22,11 @@ const std::pair<string, string> services[] = {
 int main() {
 
     int num_services = sizeof(services) / sizeof(std::pair<string, string>);
-    auto futures = new std::future<void>[num_services];
-    auto thens = new std::future<void>[num_services];
+//    auto futures = new std::future<void>[num_services];
+//    auto thens = new std::future<void>[num_services];
+
+    std::shared_ptr<std::future<void>[]> futures(new std::future<void>[num_services]);
+    std::shared_ptr<std::future<void>[]> thens(new std::future<void>[num_services]);
 
     // spawn futures with underlying GET request and another future 'then'
     // and collect into array
@@ -69,8 +72,8 @@ int main() {
     }
 
 
-    delete[] futures;
-    delete[] thens;
+//    delete[] futures;
+//    delete[] thens;
     return 0;
 }
 

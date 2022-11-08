@@ -29,6 +29,7 @@ int main() {
 
     int num_services = sizeof(services) / sizeof(std::pair<string, string>);
     auto futures = new std::future<void>[num_services];
+    auto thens = new std::future<void>[num_services];
 
     // spawn futures starting underlying task
     // and collect into array
@@ -37,19 +38,38 @@ int main() {
 
         // TODO: how to catch exception inside async task ?
 
-        futures[i] = std::async(std::launch::async, [s]() -> void {
+        futures[i] = std::async(std::launch::async, [s, &thens, i]() -> void {
             auto r = get(s.first, s.second);
+
+            thens[i] = std::async(std::launch::async, [r]() -> void {
+                std::this_thread::sleep_for(std::chrono::seconds(10));
+                cout << "------------\n";
+                cout << r.first << ", " << r.second << "\n";
+            });
         });
     }
 
 
+    cout << "main() about to end\n";
 
-//    for (int i = 0; i < num_services; i++) {
-//        futures[i].get();
+
+//    bool all_ready = false;
+//    while(!all_ready) {
+//        bool ready = true;
+//        for (int i = 0; i < 2; i++) {
+//            bool future_ready =
+//                    thens[i].valid() &&
+//                    thens[i].wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+//            ready = ready && future_ready;
+//        }
+//        all_ready = ready;
 //    }
 
 
     delete[] futures;
+    cout << "after delete[] futures\n";
+    delete[] thens;
+    cout << "after delete[] thens\n";
     return 0;
 }
 

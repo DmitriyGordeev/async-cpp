@@ -33,4 +33,8 @@ TEST_CASE("split url") {
     CHECK("catfact.ninja" == p3.first);
     CHECK("" == p3.second);
 
+    auto p4 = split_url("https://api.agify.io?name=meelad");
+    CHECK("api.agify.io" == p4.first);
+    CHECK("" == p4.second);
+
 }

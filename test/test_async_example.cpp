@@ -77,14 +77,14 @@ TEST_CASE("then") {
 
         // possible then() implementation
         // we create future inside another future and return it
-        auto f2 = std::async(std::launch::async, []() -> void {
+        auto then = std::async(std::launch::async, []() -> void {
             cout << "inner lambda starts\n";
             std::this_thread::sleep_for(std::chrono::seconds(2));
             cout << "inner lambda ends\n";
         });
 
         cout << "lambda ends\n";
-        return f2;
+        return then;
     };
 
 

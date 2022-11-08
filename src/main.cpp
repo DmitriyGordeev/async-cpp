@@ -8,7 +8,7 @@ using std::cout;
 using std::string;
 
 
-/** This program is a quick cheat-sheet of how to use std::async */
+/** This program is just a quick cheat-sheet of using std::async */
 
 
 const std::string services[] = {
@@ -28,9 +28,10 @@ std::pair<int, std::string> get(const std::string& url, const std::string& args)
 int main() {
 
     int num_services = sizeof(services) / sizeof(std::string);
-//    auto* futures = new std::future<std::pair<int, string>>[num_services];
 
+    // create array holding future objects
     std::shared_ptr<std::future<std::pair<int, string>>[]> futures(new std::future<std::pair<int, string>>[num_services]);
+
 
     // spawn futures starting underlying task
     // and collect into array
@@ -43,6 +44,8 @@ int main() {
     // TODO: wait until all are finished
 
     // TOOD: implement then() somehow ?
+
+
 
 
 

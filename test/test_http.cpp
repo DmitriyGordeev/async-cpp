@@ -8,7 +8,6 @@ using std::cout;
 #include "doctest.h"
 #include "httplib.h"
 
-#include "async_http.h"
 
 
 TEST_CASE("simple http request example with cpp-httplib") {

@@ -10,18 +10,20 @@ using std::cout;
 
 
 int foo(int a) {
-    cout << "GET() starts\n";
+    cout << "foo() starts\n";
 
     // assume some code is running in meantime
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
-    cout << "GET() ends\n";
+    cout << "foo() ends\n";
 
     return a + 2;
 }
 
 
 TEST_CASE("simple async usage") {
+
+    cout << "------- TEST1 ------- \n";
 
     // Create two async tasks and run them (saving into array arr)
     auto* arr = new std::future<int>[2];
@@ -60,4 +62,41 @@ TEST_CASE("simple async usage") {
     cout << "value2 = " << value2 << "\n";
 
     delete[] arr;
+}
+
+
+
+TEST_CASE("then") {
+
+    cout << "------- TEST2 ------- \n";
+
+    auto l = []() -> std::future<void> {
+        cout << "lambda starts\n";
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+        cout << "lambda wait has finished\n";
+
+        // possible then() implementation
+        // we create future inside another future and return it
+        auto f2 = std::async(std::launch::async, []() -> void {
+            cout << "inner lambda starts\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            cout << "inner lambda ends\n";
+        });
+
+        cout << "lambda ends\n";
+        return f2;
+    };
+
+
+    auto f = std::async(std::launch::async, l);
+
+    cout << "Some code in a meantime\n";
+
+    auto innerf = f.get();
+
+    cout << "another code\n";
+
+    innerf.get();
+
+    cout << "TEST ENDS\n";
 }

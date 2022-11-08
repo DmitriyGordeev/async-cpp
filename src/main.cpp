@@ -17,7 +17,12 @@ const std::pair<string, string> services[] = {
         {"http://www.boredapi.com", "/api/activity"}
 };
 
-
+/**
+ * This function is a simple wrapper around http GET request
+ * @param url
+ * @param args
+ * @return pair = status code(int), response body (string)
+ */
 std::pair<int, std::string> get(const std::string& url, const std::string& args) {
     httplib::Client cli(url);
     auto r = cli.Get(args);
@@ -31,7 +36,7 @@ int main() {
     auto futures = new std::future<void>[num_services];
     auto thens = new std::future<void>[num_services];
 
-    // spawn futures starting underlying task
+    // spawn futures with underlying GET request and another future 'then'
     // and collect into array
     for (int i = 0; i < num_services; i++) {
         auto s = services[i];
@@ -39,37 +44,44 @@ int main() {
         // TODO: how to catch exception inside async task ?
 
         futures[i] = std::async(std::launch::async, [s, &thens, i]() -> void {
+
+            // perform GET request
             auto r = get(s.first, s.second);
 
+            // and then start another task (like .then(() => { ... }) in js)
             thens[i] = std::async(std::launch::async, [r]() -> void {
+                // some long-running task
                 std::this_thread::sleep_for(std::chrono::seconds(10));
+
+                // printing results
                 cout << "------------\n";
-                cout << r.first << ", " << r.second << "\n";
+                cout << "status: " << r.first << "\n";
+                cout << "body:" << r.second << "\n";
             });
         });
     }
 
 
-    cout << "main() about to end\n";
+    cout << "Other stuff can be calculated here while futures are running\n";
 
 
-//    bool all_ready = false;
-//    while(!all_ready) {
-//        bool ready = true;
-//        for (int i = 0; i < 2; i++) {
-//            bool future_ready =
-//                    thens[i].valid() &&
-//                    thens[i].wait_for(std::chrono::seconds(0)) == std::future_status::ready;
-//            ready = ready && future_ready;
-//        }
-//        all_ready = ready;
-//    }
+    // Waiting for all the futures to be finished
+    // todo: is there more elegant way ?
+    bool all_ready = false;
+    while(!all_ready) {
+        bool ready = true;
+        for (int i = 0; i < num_services; i++) {
+            bool future_ready =
+                    thens[i].valid() &&
+                    thens[i].wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+            ready = ready && future_ready;
+        }
+        all_ready = ready;
+    }
 
 
     delete[] futures;
-    cout << "after delete[] futures\n";
     delete[] thens;
-    cout << "after delete[] thens\n";
     return 0;
 }
 

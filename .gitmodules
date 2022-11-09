@@ -1,6 +1,8 @@
 [submodule "deps/doctest"]
 	path = deps/doctest
 	url = https://github.com/doctest/doctest.git
+	ignore = dirty
 [submodule "deps/cpp-httplib"]
 	path = deps/cpp-httplib
 	url = https://github.com/yhirose/cpp-httplib.git
+	ignore = dirty
